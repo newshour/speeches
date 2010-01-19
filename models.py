@@ -42,7 +42,14 @@ class Speech(models.Model):
         self.transcript_html = markdown(self.transcript)
         self.transcript_html = utils.enumerate_paras(self.transcript_html)
         super(Speech, self).save()
-        
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ("speeches_speech_detail", None, {'year': self.date.strftime('%Y'),
+                                                 'month': self.date.strftime('%b').lower(),
+                                                 'day': self.date.strftime('%d'),
+                                                 'slug': self.slug})
+    
 
 class Footnote(models.Model):
     "A footnote attached to a speech"
