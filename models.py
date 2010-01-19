@@ -5,6 +5,13 @@ from django.db import models
 from markdown import markdown
 from speeches import utils
 
+# managers
+
+class SpeechManager(models.Manager):
+    def live(self):
+        return self.filter(status__exact=self.model.LIVE_STATUS)
+
+# models
 
 class Speech(models.Model):
     "A speech with a date, speaker, description and transcript"
