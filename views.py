@@ -1,4 +1,35 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
+from django.template import RequestContext
 from speeches.models import Speech, Footnote
 from speeches.forms import FootnoteForm
 
+def speech_detail(request, object_id, slug=None):
+    speech = get_object_or_404(Speech, pk__exact=object_id)
+    footnotes = speech.footnotes.all()
+    return render_to_response('speeches/speech_detail.html',
+                              {'speech': speech, 'footnotes': footnotes},
+                              context_instance=RequestContext(request))
+
+
+def annotate_speech(request, object_id):
+    speech = get_object_or_404(Speech, pk__exact=object_id)
+    footnotes = speech.footnotes.all()
+    return render_to_response('speeches/annotate_speech.html',
+                              {'speech': speech, 'footnotes': footnotes},
+                              context_instance=RequestContext(request))
+
+
+def add_footnote(request, object_id):
+    speech = get_object_or_404(Speech, pk__exact=object_id)
+    if request.method == 'POST':
+        form = FootnoteForm(request.POST)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.speech = speech
+            f.author = request.user
+            f.save()
+            return HttpResponseRedirect() # figure out where this should go
+        
+    else:
+        form = FootnoteForm()

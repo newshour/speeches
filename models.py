@@ -52,10 +52,7 @@ class Speech(models.Model):
     
     @models.permalink
     def get_absolute_url(self):
-        return ("speeches_speech_detail", None, {'year': self.date.strftime('%Y'),
-                                                 'month': self.date.strftime('%b').lower(),
-                                                 'day': self.date.strftime('%d'),
-                                                 'slug': self.slug})
+        return ("speeches_speech_detail", None, {'object_id': self.id, 'slug': self.slug})
     
 
 class Footnote(models.Model):
