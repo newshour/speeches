@@ -21,6 +21,7 @@ def annotate_speech(request, object_id):
                               {'speech': speech, 'footnotes': footnotes},
                               context_instance=RequestContext(request))
 
+
 @login_required
 def add_footnote(request, object_id):
     speech = get_object_or_404(Speech, pk__exact=object_id)
@@ -35,3 +36,7 @@ def add_footnote(request, object_id):
         
     else:
         form = FootnoteForm()
+    
+    return render_to_response('speeches/add_footnote.html',
+                              {'speech': speech, 'form': form},
+                              context_instance=RequestContext(request))

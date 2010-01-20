@@ -4,9 +4,21 @@
 {{ block.super }}
 <style type="text/css">
 #speech p:hover {
-	background-color: #E5ECF9;
+	background: #E5ECF9;
 }
 </style>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script src="http://code.jquery.com/jquery-1.4.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#speech > p').each(function(i){
+		$(this).append('<a href="#p' + i + '" class="graf">Notes</a>');
+	});
+})
+</script>
 {% endblock %}
 
 {% block title %}{{ speech.title }} | {{ block.super }}{% endblock %}
@@ -15,9 +27,25 @@
 <h2>{{ speech.title }}</h2>
 <div id="description">{{ speech.description }}</div>
 
-<div id="speech" class="span-16">
+<div id="speech" class="span-12">
 {% block speech %}
 {{ speech.transcript_html|safe }}
 {% endblock %}
 </div>
+{% block footnotes %}
+<div class="clear">
+<table id="footnote-index">
+	<tr>
+		<td>Index</td>
+		<td>Note</td>
+	</tr>
+	{% for note in footnotes %}
+	<tr>
+		<td><a href="{{ note.get_absolute_url }}">[ {{ note.index }} ]</a></td>
+		<td><strong>{{ note.author.get_full_name }}:</strong> {{ note.text }}</td>
+	</tr>
+	{% endfor %}
+</table>
+</div>
+{% endblock %}
 {% endblock %}

@@ -1,1 +1,11 @@
 {% extends "speeches/base.html" %}
+
+{% block content %}
+{% for speech in object_list %}
+<div id="s{{ speech.pk }}">
+	<h2>{{ speech.title }}</h2>
+	<p>{{ speech.description }}</p>
+	<p><a href="{{ speech.get_absolute_url }}">More...</a></p>
+</div>
+{% endfor %}
+{% endblock %}
