@@ -16,9 +16,8 @@ urlpatterns = patterns('',
         name="speeches_archive_index"
         ),
         
-    url(r'^(?P<object_id>\d+)/(?P<slug>[-\w]+)/$',
-        date_based.object_detail,
-        speech_archive_dict,
+    url(r'^(?P<object_id>\d+)/(?P<slug>[-\w]*)/$',
+        views.speech_detail,
         name="speeches_speech_detail"
         ),
 )

@@ -37,6 +37,8 @@ class Speech(models.Model):
     transcript = models.TextField()
     transcript_html = models.TextField(blank=True, editable=False)
     
+    objects = SpeechManager()
+    
     class Meta:
         get_latest_by = "date"
         ordering = ('-date',)
@@ -70,3 +72,5 @@ class Footnote(models.Model):
     def __unicode__(self):
         return u"%s: %s..." % (self.author, self.text[:30])
     
+    def get_absolute_url(self):
+        return u"%s#p%s" % (self.speech.get_absolute_url(), self.index)

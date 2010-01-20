@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
@@ -12,6 +13,7 @@ def speech_detail(request, object_id, slug=None):
                               context_instance=RequestContext(request))
 
 
+@login_required
 def annotate_speech(request, object_id):
     speech = get_object_or_404(Speech, pk__exact=object_id)
     footnotes = speech.footnotes.all()
@@ -19,7 +21,7 @@ def annotate_speech(request, object_id):
                               {'speech': speech, 'footnotes': footnotes},
                               context_instance=RequestContext(request))
 
-
+@login_required
 def add_footnote(request, object_id):
     speech = get_object_or_404(Speech, pk__exact=object_id)
     if request.method == 'POST':
@@ -29,7 +31,7 @@ def add_footnote(request, object_id):
             f.speech = speech
             f.author = request.user
             f.save()
-            return HttpResponseRedirect() # figure out where this should go
+            return HttpResponseRedirect(f.get_absolute_url()) # figure out where this should go
         
     else:
         form = FootnoteForm()

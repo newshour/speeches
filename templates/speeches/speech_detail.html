@@ -1,0 +1,23 @@
+{% extends "speeches/base.html" %}
+
+{% block css.custom %}
+{{ block.super }}
+<style type="text/css">
+#speech p:hover {
+	background-color: #E5ECF9;
+}
+</style>
+{% endblock %}
+
+{% block title %}{{ speech.title }} | {{ block.super }}{% endblock %}
+
+{% block content %}
+<h2>{{ speech.title }}</h2>
+<div id="description">{{ speech.description }}</div>
+
+<div id="speech" class="span-16">
+{% block speech %}
+{{ speech.transcript_html|safe }}
+{% endblock %}
+</div>
+{% endblock %}
