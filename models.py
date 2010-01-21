@@ -61,7 +61,7 @@ class Footnote(models.Model):
     "A footnote attached to a speech"
     speech = models.ForeignKey(Speech, related_name="footnotes")
     author = models.ForeignKey(User)
-    index = models.IntegerField(default=-1)
+    index = models.IntegerField()
     text = models.TextField("Note")
     created = models.DateTimeField(auto_now_add=True)
     

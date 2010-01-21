@@ -16,8 +16,19 @@ urlpatterns = patterns('',
         name="speeches_archive_index"
         ),
         
+    url(r'(?P<object_id>\d+)/annotate/$',
+        views.annotate_speech,
+        name="speeches_speech_detail"
+        ),
+    
+    url(r'^(?P<object_id>\d+)/add/$',
+        views.add_footnote,
+        name="speeches_footnote_add"
+        ),
+        
     url(r'^(?P<object_id>\d+)/(?P<slug>[-\w]*)/$',
         views.speech_detail,
         name="speeches_speech_detail"
         ),
+    
 )

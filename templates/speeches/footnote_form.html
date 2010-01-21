@@ -1,0 +1,18 @@
+<form action="{% url speeches_footnote_add speech.pk %}" method="post">
+	<table>
+		<tr><th><label for="id_speech">Speech:</label></th><td><select name="speech" id="id_speech">
+			<option value="" selected="selected">---------</option>
+			<option value="1">Remarks by the President Following Intergenerational Reflection on the Civil Rights Movement</option>
+		</select></td></tr>
+		<tr><th><label for="id_author">Author:</label></th><td><select name="author" id="id_author">
+			<option value="" selected="selected">---------</option>
+			<option value="1">chrisamico</option>
+		</select></td></tr>
+		<tr><th><label for="id_index">Index:</label></th><td><input type="text" name="index" value="-1" id="id_index" /></td></tr>
+		<tr><th><label for="id_text">Note:</label></th><td><textarea id="id_text" rows="10" cols="40" name="text"></textarea></td></tr>
+		<tr>
+			<td><input type="submit" value="Add footnote" /></td>
+			<td><input type="reset" value="Reset" /></td>
+		</tr>
+	</table>
+</form>

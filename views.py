@@ -25,17 +25,22 @@ def annotate_speech(request, object_id):
 @login_required
 def add_footnote(request, object_id):
     speech = get_object_or_404(Speech, pk__exact=object_id)
+    index = request.GET.get('index', '0')
     if request.method == 'POST':
-        form = FootnoteForm(request.POST)
+        form = FootnoteForm(data=request.POST)
         if form.is_valid():
             f = form.save(commit=False)
-            f.speech = speech
+            if not f.speech:
+                f.speech = speech
+            if not f.index:
+                f.index = index
+            
             f.author = request.user
             f.save()
             return HttpResponseRedirect(f.get_absolute_url()) # figure out where this should go
         
     else:
-        form = FootnoteForm()
+        form = FootnoteForm(initial={'index': index, 'author': request.user.pk})
     
     return render_to_response('speeches/add_footnote.html',
                               {'speech': speech, 'form': form},

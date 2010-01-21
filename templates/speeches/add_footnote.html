@@ -1,0 +1,16 @@
+{% extends "speeches/speech_detail.html" %}
+
+{% block content %}
+<h2>Add a footnote</h2>
+	<div id="form">
+		<form action="{% url speeches_footnote_add speech.pk %}" method="post">
+			<table>
+				{{ form }}
+				<tr>
+					<td><input type="submit" value="Add footnote" /></td>
+					<td><input type="reset" value="Reset" /></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+{% endblock %}
