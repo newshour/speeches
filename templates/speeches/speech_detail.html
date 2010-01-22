@@ -22,7 +22,9 @@ $(document).ready(function(){
 		$(this).append(a);
 		$(a).click(function(){
 			var notes = $('div#i' + i).children();
-			a.parent().append(notes).slideDown()
+			var new_notes = $('<div/>').addClass('notes').hide().html(notes);
+			a.parent().after(new_notes);
+			notes.slideDown('slow');
 		});
 	});
 })
@@ -40,9 +42,13 @@ $(document).ready(function(){
 {{ speech.transcript_html|safe }}
 {% endblock %}
 </div>
+
 {% block footnotes %}
+
 {% load markup %}
+
 {% regroup footnotes by index as index_list %}
+<div id="footnotes" class="clear">
 {% for index in index_list %}
 	<div id="i{{ index.grouper }}" class="footnote">
 		{% for footnote in index.list %}
@@ -50,6 +56,8 @@ $(document).ready(function(){
 		{% endfor %}
 	</div>
 {% endfor %}
+</div>
+
 {% comment %}
 {# <script type="text/javascript"> #}
 var footnotes = {}
