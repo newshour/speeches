@@ -15,7 +15,15 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	$('#speech > p').each(function(i){
-		$(this).append('<a href="#p' + i + '" class="graf">Notes</a>');
+		var a = $('<a/>');
+		a.attr('class', 'note-link');
+		a.attr('href', '#p' + i);
+		a.text('Notes');
+		$(this).append(a);
+		$(a).click(function(){
+			var notes = $('div#i' + i).children();
+			a.parent().append(notes).slideDown()
+		});
 	});
 })
 </script>
@@ -34,9 +42,16 @@ $(document).ready(function(){
 </div>
 {% block footnotes %}
 {% load markup %}
-<script type="text/javascript">
 {% regroup footnotes by index as index_list %}
-
+{% for index in index_list %}
+	<div id="i{{ index.grouper }}" class="footnote">
+		{% for footnote in index.list %}
+		{{ footnote.render|safe }}
+		{% endfor %}
+	</div>
+{% endfor %}
+{% comment %}
+{# <script type="text/javascript"> #}
 var footnotes = {}
 {% for index in index_list %}
 footnotes[{{ index.grouper }}]['count'] = {{ index.list|length }};
@@ -45,12 +60,12 @@ footnotes[{{ index.grouper }}]['notes'] = [
 		type: '{{ footnote.note_type }}',
 		icon: '{{ footnote.note_type.icon }}',
 		author: '{{ footnote.author.get_full_name }}',
-		text: '{{ footnote.text|markdown }}'
+		text: '{% spaceless %}{{ footnote.render }}{% endspaceless %}'
 	},{% endfor %}
-]
+];
 {% endfor %}
-
 </script>
-
+{% endcomment %}
 {% endblock %}
+
 {% endblock %}
