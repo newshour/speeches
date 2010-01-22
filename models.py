@@ -17,6 +17,9 @@ class FootnoteManager(models.Manager):
     from django.utils import simplejson
     def json(self):
         pass
+    
+    def live(self):
+        return self.filter(public=True)
 
 # models
 
@@ -68,7 +71,7 @@ class Speech(models.Model):
     
     @models.permalink
     def get_absolute_url(self):
-        return ("speeches_speech_detail", None, {'object_id': self.id, 'slug': self.slug})
+        return ("speeches_speech_detail", None, {'object_id': self.pk, 'slug': self.slug})
     
 
 class FootnoteType(models.Model):
@@ -95,6 +98,9 @@ class Footnote(models.Model):
     index = models.IntegerField()
     text = models.TextField("Note")
     created = models.DateTimeField(auto_now_add=True)
+    public = models.BooleanField(default=False)
+    
+    objects = FootnoteManager()
     
     class Meta:
         get_latest_by = "created"

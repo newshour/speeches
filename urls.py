@@ -26,7 +26,7 @@ urlpatterns = patterns('',
         name="speeches_footnote_add"
         ),
         
-    url(r'^(?P<object_id>\d+)/(?P<slug>[-\w]*)/$',
+    url(r'^(?P<object_id>\d+)/(?P<slug>[-\w]+)/$',
         views.speech_detail,
         name="speeches_speech_detail"
         ),

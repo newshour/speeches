@@ -13,19 +13,70 @@
 {{ block.super }}
 <script src="http://code.jquery.com/jquery-1.4.min.js" type="text/javascript"></script>
 <script type="text/javascript">
+function setupNoteBox() {
+	var overlay = $(jQuery('<div id="overlay" style="display: none"></div>'));
+	var container = $(jQuery('<div id="lightbox" style="display: none"></div>'));
+	var close = $(jQuery('<a href="#close" class="close">&times; Close</a>'));
+	var target = $(jQuery('<div class="target"></div>'));
+  
+	$('body').append(overlay).append(container);
+	container.append(close).append(target);
+	
+	container.show().css({'top': Math.round((($(window).height() > window.innerHeight ? window.innerHeight : $(window).height()) - container.outerHeight()) / 2) + 'px', 'left': Math.round(($(window).width() - container.outerWidth()) / 2) + 'px', 'margin-top': 0, 'margin-left': 0}).hide();
+	
+	close.click(function(c) {
+		c.preventDefault();
+		overlay.add(container).fadeOut('normal');
+	});
+};
+
+function createNoteBox(notes){
+	var overlay = $('#overlay');
+	var container = $('#lightbox');
+	var target = container.children('#target');
+	
+	var open = function(){
+		if (container.is(':visible')) {
+			target.children().fadeOut('normal', function(){
+				target.children().remove();
+				loadNotes();
+			});
+		} else {
+			target.children().remove();
+			overlay.add(container).fadeIn('normal', function(){
+				loadNotes();
+			});
+		};
+	};
+	
+	var loadNotes = function(){
+		// get those notes showing and make it all pretty
+		var WIDTH = 600; // hard coded, since we're mostly showing text
+		var HEIGHT = 800;
+		container.animate({'border': '1px solid black', 'height': HEIGHT, 'width': WIDTH, 'top': Math.round((($(window).height() > window.innerHeight ? window.innerHeight : $(window).height()) - HEIGHT - parseInt(container.css('padding-top'),10) - parseInt(container.css('padding-bottom'),10)) / 2) + 'px', 'left': Math.round(($(window).width() - WIDTH - parseInt(container.css('padding-left'),10) - parseInt(container.css('padding-right'),10)) / 2) + 'px'});
+	};
+	
+	open();
+};
+
 $(document).ready(function(){
+	$('#footnotes').hide()
+	setupNoteBox();
 	$('#speech > p').each(function(i){
+		// get attached notes
+		var notes = $('div#i' + i).children();
+		
+		// make a link to grab those notes
 		var a = $('<a/>');
 		a.attr('class', 'note-link');
 		a.attr('href', '#p' + i);
-		a.text('Notes');
+		a.text(notes.length + ' Notes');
 		$(this).append(a);
-		$(a).click(function(){
-			var notes = $('div#i' + i).children();
-			var new_notes = $('<div/>').addClass('notes').hide().html(notes);
-			a.parent().after(new_notes);
-			notes.slideDown('slow');
+		a.click(function(c){
+			c.preventDefault();
+			createNoteBox(notes);
 		});
+		
 	});
 })
 </script>
