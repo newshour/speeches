@@ -1,2 +1,12 @@
-{% extends "speeches/speech_detail.html %}
+{% extends "speeches/speech_detail.html" %}
 
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#speech > p').each(function(i){
+		$(this).append(' | <a href="{% url speeches_footnote_add speech.pk %}?index=' + i + '" class="add-link">Add footnote</a>');
+	});
+})
+</script>
+{% endblock %}

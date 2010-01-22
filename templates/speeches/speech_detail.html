@@ -33,19 +33,24 @@ $(document).ready(function(){
 {% endblock %}
 </div>
 {% block footnotes %}
-<div class="clear span-12">
-<table id="footnote-index">
-	<tr>
-		<td>Index</td>
-		<td>Note</td>
-	</tr>
-	{% for note in footnotes %}
-	<tr>
-		<td><a href="{{ note.get_absolute_url }}">[ {{ note.index }} ]</a></td>
-		<td><strong>{{ note.author.get_full_name }}:</strong> {{ note.text }}</td>
-	</tr>
-	{% endfor %}
-</table>
-</div>
+{% load markup %}
+<script type="text/javascript">
+{% regroup footnotes by index as index_list %}
+
+var footnotes = {}
+{% for index in index_list %}
+footnotes[{{ index.grouper }}]['count'] = {{ index.list|length }};
+footnotes[{{ index.grouper }}]['notes'] = [
+	{% for footnote in index.list %}{
+		type: '{{ footnote.note_type }}',
+		icon: '{{ footnote.note_type.icon }}',
+		author: '{{ footnote.author.get_full_name }}',
+		text: '{{ footnote.text|markdown }}'
+	},{% endfor %}
+]
+{% endfor %}
+
+</script>
+
 {% endblock %}
 {% endblock %}

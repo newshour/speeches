@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
@@ -37,10 +38,14 @@ def add_footnote(request, object_id):
             
             f.author = request.user
             f.save()
-            return HttpResponseRedirect(f.get_absolute_url()) # figure out where this should go
+            return HttpResponseRedirect(reverse('speeches_speech_annotate', args=(speech.pk,), kwargs={}))
         
     else:
-        form = FootnoteForm(initial={'index': index, 'author': request.user.pk})
+        form = FootnoteForm(initial={
+            'index': index,
+            'author': request.user.pk,
+            'speech': speech.pk
+        })
     
     return render_to_response('speeches/add_footnote.html',
                               {'speech': speech, 'form': form},

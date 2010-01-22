@@ -18,7 +18,7 @@ urlpatterns = patterns('',
         
     url(r'(?P<object_id>\d+)/annotate/$',
         views.annotate_speech,
-        name="speeches_speech_detail"
+        name="speeches_speech_annotate"
         ),
     
     url(r'^(?P<object_id>\d+)/add/$',

@@ -1,0 +1,26 @@
+[
+    {
+        "pk": 1, 
+        "model": "speeches.footnotetype", 
+        "fields": {
+            "name": "Comment", 
+            "slug": "comment"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "speeches.footnotetype", 
+        "fields": {
+            "name": "Document", 
+            "slug": "document"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "speeches.footnotetype", 
+        "fields": {
+            "name": "Video", 
+            "slug": "video"
+        }
+    }
+]
