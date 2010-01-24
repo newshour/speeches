@@ -18,7 +18,7 @@ function setupNoteBox() {
 	var container = $(jQuery('<div id="lightbox" style="display: none"></div>'));
 	var close = $(jQuery('<a href="#close" class="close">&times; Close</a>'));
 	var target = $(jQuery('<div class="target"></div>'));
-  
+    
 	$('body').append(overlay).append(container);
 	container.append(close).append(target);
 	
@@ -34,6 +34,7 @@ function createNoteBox(notes){
 	var overlay = $('#overlay');
 	var container = $('#lightbox');
 	var target = container.children('#target');
+	target.append(notes);
 	
 	var open = function(){
 		if (container.is(':visible')) {
@@ -54,6 +55,8 @@ function createNoteBox(notes){
 		var WIDTH = 600; // hard coded, since we're mostly showing text
 		var HEIGHT = 800;
 		container.animate({'border': '1px solid black', 'height': HEIGHT, 'width': WIDTH, 'top': Math.round((($(window).height() > window.innerHeight ? window.innerHeight : $(window).height()) - HEIGHT - parseInt(container.css('padding-top'),10) - parseInt(container.css('padding-bottom'),10)) / 2) + 'px', 'left': Math.round(($(window).width() - WIDTH - parseInt(container.css('padding-left'),10) - parseInt(container.css('padding-right'),10)) / 2) + 'px'});
+		
+		notes.show();
 	};
 	
 	open();

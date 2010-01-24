@@ -1,7 +1,15 @@
-{% extends "speeches/speech_detail.html" %}
+{% extends "speeches/base.html" %}
+
+{% block title %}Add footnote | {{ speech.title }} | {{ block.super }}{% endblock %}
 
 {% block content %}
 <h2>Add a footnote</h2>
+	<div id="footnote_list">
+	<p>Already noted:</p>
+	{% for footnote in footnotes %}
+	{{ footnote.render }}
+	{% endfor %}
+	</div>
 	<div id="form">
 		<form action="{% url speeches_footnote_add speech.pk %}" method="post">
 			<table>
