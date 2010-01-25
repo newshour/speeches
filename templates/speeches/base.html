@@ -1,3 +1,42 @@
 {% extends "base.html" %}
 
 {% block title %}Speeches | {{ block.super }}{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="http://www.pbs.org/newshour/interactive/static/js/fancybox/fancybox.css" type="text/css" media="screen">
+{% endblock %}
+
+{% block js %}
+<script src="http://code.jquery.com/jquery-1.4.min.js" type="text/javascript"></script>
+<script src="http://www.pbs.org/newshour/interactive/static/js/fancybox/fancybox.js" type="text/javascript"></script>  
+{% endblock %}
+
+{% block content %}
+<h1>{{ speech.title }}</h1>
+<div id="speech">
+{% block speech %}
+{{ speech.transcript_html|safe }}
+{% endblock %}
+</div>
+
+<div id="bios">
+{% block bios %}
+{{ block.super }}
+{% endblock %}
+</div>
+
+{% block footnotes %}
+{% regroup footnotes by index as index_list %}
+<div id="footnotes" class="clear">
+{% for index in index_list %}
+	<div id="i{{ index.grouper }}" class="footnote">
+		{% for footnote in index.list %}
+		{{ footnote.render|safe }}
+		{% endfor %}
+	</div>
+{% endfor %}
+</div>
+
+{% endblock %}
+{% endblock %}

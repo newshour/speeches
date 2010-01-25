@@ -31,4 +31,8 @@ urlpatterns = patterns('',
         name="speeches_speech_detail"
         ),
     
+    url(r'(?P<object_id>\d+)/$',
+        views.speech_detail,
+        name="speeches_speech_detail_simple"
+        ),
 )

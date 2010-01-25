@@ -8,6 +8,9 @@ from speeches.forms import FootnoteForm
 
 def speech_detail(request, object_id, slug=None):
     speech = get_object_or_404(Speech, pk__exact=object_id)
+    if speech.slug != slug:
+        return HttpResponseRedirect(speech.get_absolute_url())
+        
     footnotes = speech.footnotes.all()
     return render_to_response('speeches/speech_detail.html',
                               {'speech': speech, 'footnotes': footnotes},

@@ -73,6 +73,10 @@ class Speech(models.Model):
     def get_absolute_url(self):
         return ("speeches_speech_detail", None, {'object_id': self.pk, 'slug': self.slug})
     
+    def users(self):
+        u_list = [f.author.pk for f in self.footnotes.all()]
+        return User.objects.filter(pk__in=u_list)
+
 
 class FootnoteType(models.Model):
     name = models.CharField(max_length=50)
@@ -120,3 +124,25 @@ class Footnote(models.Model):
         )
 
 
+class GuestProfile(models.Model):
+    user = models.OneToOneField(User, related_name="profile")
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    title = models.CharField(max_length=100, blank=True)
+    bio = models.TextField(blank=True)
+    image_url = models.URLField(max_length=255, blank=True)
+    
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        get_latest_by = "date_added"
+        ordering = ('last_name', 'first_name')
+        
+    def __unicode__(self):
+        return self.user.get_full_name()
+    
+    def save(self):
+        self.user.first_name, self.user.last_name = self.first_name, self.last_name
+        self.user.save() # denormalized for easier editing
+        super(GuestProfile, self).save()
