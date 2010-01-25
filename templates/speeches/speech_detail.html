@@ -1,106 +1,63 @@
 {% extends "speeches/base.html" %}
 
-{% block css.custom %}
+{% block css %}
 {{ block.super }}
-<style type="text/css">
-#speech p:hover {
-	background: #E5ECF9;
-}
-</style>
+<link rel="stylesheet" href="{{ MEDIA_URL }}js/fancybox/fancybox.css" type="text/css" media="screen">
 {% endblock %}
-
 {% block js %}
 {{ block.super }}
-<script src="http://code.jquery.com/jquery-1.4.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-function setupNoteBox() {
-	var overlay = $(jQuery('<div id="overlay" style="display: none"></div>'));
-	var container = $(jQuery('<div id="lightbox" style="display: none"></div>'));
-	var close = $(jQuery('<a href="#close" class="close">&times; Close</a>'));
-	var target = $(jQuery('<div class="target"></div>'));
-    
-	$('body').append(overlay).append(container);
-	container.append(close).append(target);
-	
-	container.show().css({'top': Math.round((($(window).height() > window.innerHeight ? window.innerHeight : $(window).height()) - container.outerHeight()) / 2) + 'px', 'left': Math.round(($(window).width() - container.outerWidth()) / 2) + 'px', 'margin-top': 0, 'margin-left': 0}).hide();
-	
-	close.click(function(c) {
-		c.preventDefault();
-		overlay.add(container).fadeOut('normal');
-	});
-};
-
-function createNoteBox(notes){
-	var overlay = $('#overlay');
-	var container = $('#lightbox');
-	var target = container.children('#target');
-	target.append(notes);
-	
-	var open = function(){
-		if (container.is(':visible')) {
-			target.children().fadeOut('normal', function(){
-				target.children().remove();
-				loadNotes();
-			});
-		} else {
-			target.children().remove();
-			overlay.add(container).fadeIn('normal', function(){
-				loadNotes();
-			});
-		};
-	};
-	
-	var loadNotes = function(){
-		// get those notes showing and make it all pretty
-		var WIDTH = 600; // hard coded, since we're mostly showing text
-		var HEIGHT = 800;
-		container.animate({'border': '1px solid black', 'height': HEIGHT, 'width': WIDTH, 'top': Math.round((($(window).height() > window.innerHeight ? window.innerHeight : $(window).height()) - HEIGHT - parseInt(container.css('padding-top'),10) - parseInt(container.css('padding-bottom'),10)) / 2) + 'px', 'left': Math.round(($(window).width() - WIDTH - parseInt(container.css('padding-left'),10) - parseInt(container.css('padding-right'),10)) / 2) + 'px'});
-		
-		notes.show();
-	};
-	
-	open();
-};
-
+<script src="{{ MEDIA_URL }}js/fancybox/fancybox.js" type="text/javascript"></script>  
+ 
+<script type="text/javascript"> 
+ 
 $(document).ready(function(){
-	$('#footnotes').hide()
-	setupNoteBox();
 	$('#speech > p').each(function(i){
 		// get attached notes
 		var notes = $('div#i' + i).children();
 		
+		if(notes.length >=1) {
 		// make a link to grab those notes
 		var a = $('<a/>');
 		a.attr('class', 'note-link');
-		a.attr('href', '#p' + i);
+		a.attr('href', '#i' + i);
 		a.text(notes.length + ' Notes');
 		$(this).append(a);
-		a.click(function(c){
-			c.preventDefault();
-			createNoteBox(notes);
-		});
-		
+		}
 	});
+	
+	/* Set lightbox config */
+	
+	$("a.note-link").fancybox({
+		'zoomSpeedIn':		300, 
+		'zoomSpeedOut':	300, 
+		'overlayShow':		true,					  
+		'hideOnContentClick': false,
+		'autoDimensions'    : false,
+		'frameWidth'        : 600,
+		'frameHeight'       : 'auto',
+		'padding'			: 30,
+		'overlayOpacity' 	: .4,
+		'overlayColor'		: 000
+	});
+	
 })
-</script>
+</script> 
+ <style>
+     #footnotes { display: none;  }
+ </style>
 {% endblock %}
 
 {% block title %}{{ speech.title }} | {{ block.super }}{% endblock %}
 
-{% block content %}
-<h2>{{ speech.title }}</h2>
-<div id="description">{{ speech.description }}</div>
-
-<div id="speech" class="span-12">
 {% block speech %}
 {{ speech.transcript_html|safe }}
 {% endblock %}
-</div>
+
+{% block bios %}
+{{ block.super }}
+{% endblock %}
 
 {% block footnotes %}
-
-{% load markup %}
-
 {% regroup footnotes by index as index_list %}
 <div id="footnotes" class="clear">
 {% for index in index_list %}
@@ -112,22 +69,5 @@ $(document).ready(function(){
 {% endfor %}
 </div>
 
-{% comment %}
-{# <script type="text/javascript"> #}
-var footnotes = {}
-{% for index in index_list %}
-footnotes[{{ index.grouper }}]['count'] = {{ index.list|length }};
-footnotes[{{ index.grouper }}]['notes'] = [
-	{% for footnote in index.list %}{
-		type: '{{ footnote.note_type }}',
-		icon: '{{ footnote.note_type.icon }}',
-		author: '{{ footnote.author.get_full_name }}',
-		text: '{% spaceless %}{{ footnote.render }}{% endspaceless %}'
-	},{% endfor %}
-];
-{% endfor %}
-</script>
-{% endcomment %}
 {% endblock %}
 
-{% endblock %}
