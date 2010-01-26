@@ -1,19 +1,25 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from speeches.models import Speech, Footnote
 from speeches.forms import FootnoteForm
 
+from django.views.decorators.cache import never_cache
+
+@never_cache
 def speech_detail(request, object_id, slug=None):
     speech = get_object_or_404(Speech, pk__exact=object_id)
+    if not request.user.is_staff and (speech.status != Speech.LIVE_STATUS):
+        raise Http404
     if speech.slug != slug:
         return HttpResponseRedirect(speech.get_absolute_url())
         
-    footnotes = speech.footnotes.all()
+    footnotes = speech.footnotes.live()
+    guest_list = speech.users().filter(profile__isnull=False)
     return render_to_response('speeches/speech_detail.html',
-                              {'speech': speech, 'footnotes': footnotes},
+                              {'speech': speech, 'footnotes': footnotes, 'guest_list': guest_list},
                               context_instance=RequestContext(request))
 
 
@@ -21,8 +27,9 @@ def speech_detail(request, object_id, slug=None):
 def annotate_speech(request, object_id):
     speech = get_object_or_404(Speech, pk__exact=object_id)
     footnotes = speech.footnotes.all()
+    guests = speech.users().filter(profile__isnull=False)
     return render_to_response('speeches/annotate_speech.html',
-                              {'speech': speech, 'footnotes': footnotes},
+                              {'speech': speech, 'footnotes': footnotes, 'guests': guests},
                               context_instance=RequestContext(request))
 
 
@@ -52,8 +59,8 @@ def add_footnote(request, object_id):
         form = FootnoteForm(initial={
             'index': index,
             'author': request.user.pk,
-            'speech': speech.pk
-        })
+            'speech': speech.pk}
+        )
     
     return render_to_response(template,
                               {'speech': speech, 'form': form, 'footnotes': footnotes},

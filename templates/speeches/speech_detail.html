@@ -9,20 +9,36 @@
 <script src="{{ MEDIA_URL }}js/fancybox/fancybox.js" type="text/javascript"></script>  
  
 <script type="text/javascript"> 
- 
+
 $(document).ready(function(){
 	$('#speech > p').each(function(i){
 		// get attached notes
 		var notes = $('div#i' + i).children();
 		
-		if(notes.length >=1) {
+		var noteType
+		
+		if ($(notes[0]).is('.video')) {
+			noteType = 'video'
+		} else if ($(notes[0]).is('.comment')) {
+			noteType = 'comment'
+		} else if ($(notes[0]).is('.document')) {
+			noteType = 'document'
+		};
+		
+		if (notes.length >=1) {
 		// make a link to grab those notes
-		var a = $('<a/>');
-		a.attr('class', 'note-link');
-		a.attr('href', '#i' + i);
-		a.text(notes.length + ' Notes');
-		$(this).append(a);
-		}
+			var a = $('<a/>');
+			a.attr('class', 'note-link ' + noteType);
+			a.attr('href', '#i' + i);
+			if (notes.length == 1) {
+				a.text('1 Note');
+			} else {
+				a.text(notes.length + ' Notes');
+			};
+			$(this).append(a);
+		};
+		// $(this).wrap('<div class="wrapper" id="ps' + i + '"></div>');
+		
 	});
 	
 	/* Set lightbox config */
@@ -43,18 +59,47 @@ $(document).ready(function(){
 })
 </script> 
  <style>
-     #footnotes { display: none;  }
- </style>
+    #footnotes { display: none; }
+     
+    a.note-link {
+    	position: absolute;
+    	top: 0px;
+    	left: -5em;
+    }
+     
+    div.wrapper {
+    	position: relative;
+    	display: inline;
+    }
+     
+    .speech p { position: relative; }
+	 
+</style>
 {% endblock %}
 
 {% block title %}{{ speech.title }} | {{ block.super }}{% endblock %}
 
-{% block speech %}
-{{ speech.transcript_html|safe }}
-{% endblock %}
+{% block description %}{{ speech.description }}{% endblock %}
 
 {% block bios %}
-{{ block.super }}
+    {% for guest in guest_list %}
+		<div id="{{ guest.username }}" class="notes">
+          <h4>{{ guest.get_full_name }}</h4>
+          <p>{% if guest.profile.image_url %}<img src="{{ guest.profile.image_url }}" height="50" width="50" />{% endif %}{{ guest.profile.bio }}</p>
+        </div>
+	{% endfor %}
+{%  endblock %}
+
+{% block  participants %}
+	{% for guest in guest_list %}
+		<div class="bio">{% if guest.profile.image_url %}<a href="#{{ guest.username }}"><img src="{{ guest.profile.image_url }}" height="50" width="50" /></a><br />{% endif %}
+            <a href="#{{ guest.username }}">{{ guest.first_name }} <br />
+          {{ guest.last_name }}</a></div>
+	{% endfor %}
+{% endblock %}
+
+{% block speech %}
+{{ speech.transcript_html|safe }}
 {% endblock %}
 
 {% block footnotes %}

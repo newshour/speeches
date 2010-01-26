@@ -1,5 +1,5 @@
 {% load markup %}
-<div id="f{{ footnote.id }}" class="footnote">
+<div id="f{{ footnote.id }}" class="footnote {{ footnote.note_type.slug }}">
 	{{ footnote.text|markdown }}
 	<p class=""><strong>{{ footnote.author.get_full_name }}</strong></p>
 </div>
