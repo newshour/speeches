@@ -4,7 +4,6 @@
 
 {% block content %}
 <h2>Add a footnote</h2>
-<p class="quiet">Or, <a href="{% url speeches_speech_annotate speech.pk %}">Go back to {{ speech.title }}</a></p>
 	<div id="footnote_list">
 	<p>Already noted:</p>
 	{% for footnote in footnotes %}

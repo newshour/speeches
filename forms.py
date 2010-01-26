@@ -5,4 +5,4 @@ class FootnoteForm(forms.ModelForm):
     
     class Meta:
         model = Footnote
-        # exclude = ('author', 'index')
+        exclude = ('speech', 'public')

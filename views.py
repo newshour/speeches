@@ -28,6 +28,10 @@ def annotate_speech(request, object_id):
 
 @login_required
 def add_footnote(request, object_id):
+    if request.GET.has_key('popup'):
+        template = "speeches/add_footnote_popup.html"
+    else:
+        template = "speeches/add_footnote.html"
     speech = get_object_or_404(Speech, pk__exact=object_id)
     index = request.GET.get('index', '0')
     footnotes = speech.footnotes.filter(index=index)
@@ -51,6 +55,6 @@ def add_footnote(request, object_id):
             'speech': speech.pk
         })
     
-    return render_to_response('speeches/add_footnote.html',
+    return render_to_response(template,
                               {'speech': speech, 'form': form, 'footnotes': footnotes},
                               context_instance=RequestContext(request))
