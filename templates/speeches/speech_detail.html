@@ -15,7 +15,12 @@ $(document).ready(function(){
 		// get attached notes
 		var notes = $('div#i' + i).children();
 		
-		var noteType
+		var noteType;
+		var icons = {
+			video: '{{ MEDIA_URL }}css/footnotes/images/btn_video.gif',
+			comment: '{{ MEDIA_URL }}css/footnotes/images/btn_response.gif',
+			document: '{{ MEDIA_URL }}css/footnotes/images/btn_source.gif'
+		};
 		
 		if ($(notes[0]).is('.video')) {
 			noteType = 'video'
@@ -25,16 +30,21 @@ $(document).ready(function(){
 			noteType = 'document'
 		};
 		
+		var link_img = $('<img/>').attr('src', icons[noteType]);
+		
 		if (notes.length >=1) {
 		// make a link to grab those notes
 			var a = $('<a/>');
 			a.attr('class', 'note-link ' + noteType);
 			a.attr('href', '#i' + i);
 			if (notes.length == 1) {
-				a.text('1 Note');
+				a.attr('title', '1 Response');
+				link_img.attr('alt', '1 Response');
 			} else {
-				a.text(notes.length + ' Notes');
+				a.attr('title', notes.length + ' Responses');
+				link_img.attr('alt', notes.length + ' Responses');
 			};
+			a.html(link_img);
 			$(this).append(a);
 		};
 		// $(this).wrap('<div class="wrapper" id="ps' + i + '"></div>');
@@ -43,7 +53,8 @@ $(document).ready(function(){
 	
 	/* Set lightbox config */
 	
-	$("a.note-link").fancybox({
+	$('a.note-link').click(function() {
+		$.fancybox(this, {
 		'zoomSpeedIn':		300, 
 		'zoomSpeedOut':	300, 
 		'overlayShow':		true,					  
@@ -54,6 +65,8 @@ $(document).ready(function(){
 		'padding'			: 30,
 		'overlayOpacity' 	: .4,
 		'overlayColor'		: '#000000'
+		});
+		return false;
 	});
 	
 })
@@ -64,7 +77,7 @@ $(document).ready(function(){
     a.note-link {
     	position: absolute;
     	top: 0px;
-    	left: -5em;
+    	left: -10em;
     }
      
     div.wrapper {
