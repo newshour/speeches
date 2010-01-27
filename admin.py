@@ -1,11 +1,13 @@
 from django.contrib import admin
-from speeches.models import Speech, FootnoteType, Footnote, GuestProfile
+from speeches.models import Speech, FootnoteType, Footnote, GuestProfile, GuestProfileImage
 
 
 class FootnoteInline(admin.StackedInline):
     model = Footnote
     extra = 3
 
+class GuestProfileImageInline(admin.StackedInline):
+    model = GuestProfileImage
 
 class SpeechAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
@@ -18,7 +20,9 @@ class FootnoteTypeAdmin(admin.ModelAdmin):
 
 
 class GuestProfileAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('admin_thumbnail_view', 'get_full_name')
+    list_display_links = ('admin_thumbnail_view', 'get_full_name')
+    inlines = [GuestProfileImageInline]
 
 
 admin.site.register(FootnoteType, FootnoteTypeAdmin)

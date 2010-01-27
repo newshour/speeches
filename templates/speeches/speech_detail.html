@@ -99,14 +99,14 @@ $(document).ready(function(){
     {% for guest in guest_list %}
 		<div id="{{ guest.username }}" class="notes">
           <h4>{{ guest.get_full_name }}</h4>
-          <p>{% if guest.profile.image_url %}<img src="{{ guest.profile.image_url }}" height="50" width="50" />{% endif %}{{ guest.profile.bio }}</p>
+          <p>{% if guest.profile.image %}<img src="{{ guest.profile.image.thumbnail.url }}" height="50" width="50" />{% endif %}{{ guest.profile.bio }}</p>
         </div>
 	{% endfor %}
 {%  endblock %}
 
 {% block  participants %}
 	{% for guest in guest_list %}
-		<div class="bio">{% if guest.profile.image_url %}<a href="#{{ guest.username }}"><img src="{{ guest.profile.image_url }}" height="50" width="50" /></a><br />{% endif %}
+		<div class="bio">{% if guest.profile.image %}<a href="#{{ guest.username }}"><img src="{{ guest.profile.image.thumbnail.url }}" height="50" width="50" /></a><br />{% endif %}
             <a href="#{{ guest.username }}">{{ guest.first_name }} <br />
           {{ guest.last_name }}</a></div>
 	{% endfor %}

@@ -4,6 +4,8 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 
+from backends.s3 import S3Storage
+from imagekit.models import ImageModel, CROP_HORZ_CHOICES, CROP_VERT_CHOICES
 from markdown import markdown
 from speeches import utils
 
@@ -146,3 +148,33 @@ class GuestProfile(models.Model):
         self.user.first_name, self.user.last_name = self.first_name, self.last_name
         self.user.save() # denormalized for easier editing
         super(GuestProfile, self).save()
+
+    def admin_thumbnail_view(self):
+        return self.image.admin_thumbnail_view()
+    admin_thumbnail_view.short_description = "Thumbnail"
+    admin_thumbnail_view.allow_tags = True
+
+    def get_full_name(self):
+        return self.user.get_full_name()
+
+
+class GuestProfileImage(ImageModel):
+    guest = models.OneToOneField(GuestProfile, related_name="image")
+    image = models.ImageField(upload_to='photos/speeches/guests', storage=S3Storage())
+    crop_vert = models.IntegerField("Crop Vertical", choices=CROP_VERT_CHOICES, default=1)
+    crop_horz = models.IntegerField("Crop Horizontal", choices=CROP_HORZ_CHOICES, default=1)
+
+    class Meta:
+        ordering = ('guest',)
+
+    class IKOptions:
+        spec_module = "photos.specs"
+        cache_dir = ""
+        image_field = "image"
+        admin_thumbnail_spec = "thumbnail"
+        crop_horz_field = "crop_horz"
+        crop_vert_field = "crop_vert"
+
+    def __unicode__(self):
+        return unicode(self.guest)
+

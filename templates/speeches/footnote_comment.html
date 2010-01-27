@@ -1,5 +1,12 @@
 {% load markup %}
 <div id="f{{ footnote.id }}" class="footnote {{ footnote.note_type.slug }}">
-	<p class="author"><strong>{{ footnote.author.get_full_name }}:</strong></p>
+	<p class="author">
+	{% if footnote.author.profile.image %}
+	<img src="{{ footnote.author.profile.image.thumbnail.url }}" class="profile-image" width="50" height="50" />
+	{% endif %}
+	<span><strong>{{ footnote.author.get_full_name }}</strong> {% block verb %}said{% endblock %}:</span>
+	</p>
+	<div>
 	{{ footnote.text|markdown }}
+	</div>
 </div>

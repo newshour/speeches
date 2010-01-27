@@ -18,7 +18,7 @@ def speech_detail(request, object_id, slug=None):
         
     footnotes = speech.footnotes.live()
     guest_list = speech.users().filter(profile__isnull=False)
-    return render_to_response('speeches/speech_detail.html',
+    return render_to_response(('speeches/speech%s.html' % speech.pk, 'speeches/speech_detail.html'),
                               {'speech': speech, 'footnotes': footnotes, 'guest_list': guest_list},
                               context_instance=RequestContext(request))
 
@@ -28,8 +28,8 @@ def annotate_speech(request, object_id):
     speech = get_object_or_404(Speech, pk__exact=object_id)
     footnotes = speech.footnotes.all()
     guests = speech.users().filter(profile__isnull=False)
-    return render_to_response('speeches/annotate_speech.html',
-                              {'speech': speech, 'footnotes': footnotes, 'guests': guests},
+    return render_to_response(('speeches/speech%s.html' % speech.pk, 'speeches/annotate_speech.html'),
+                              {'speech': speech, 'footnotes': footnotes, 'guest_list': guests},
                               context_instance=RequestContext(request))
 
 
