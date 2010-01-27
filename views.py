@@ -11,8 +11,8 @@ from django.views.decorators.cache import never_cache
 @never_cache
 def speech_detail(request, object_id, slug=None):
     speech = get_object_or_404(Speech, pk__exact=object_id)
-    if not request.user.is_staff and (speech.status != Speech.LIVE_STATUS):
-        raise Http404
+    # if not request.user.is_staff and (speech.status != Speech.LIVE_STATUS):
+    #    raise Http404
     if speech.slug != slug:
         return HttpResponseRedirect(speech.get_absolute_url())
         
