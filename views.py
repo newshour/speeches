@@ -6,6 +6,7 @@ from django.template import RequestContext
 from speeches.models import Speech, Footnote
 from speeches.forms import FootnoteForm
 
+from django.views.decorators.cache import never_cache
 
 def speech_index(request):
     try:
@@ -30,6 +31,7 @@ def speech_detail(request, object_id, slug=None):
                               context_instance=RequestContext(request))
 
 
+@never_cache
 @login_required
 def annotate_speech(request, object_id):
     speech = get_object_or_404(Speech, pk__exact=object_id)
@@ -59,7 +61,8 @@ def add_footnote(request, object_id):
             if not f.index:
                 f.index = index
             
-            f.author = request.user
+            if not f.author:
+                f.author = request.user
             f.save()
             return HttpResponseRedirect(reverse('speeches_speech_annotate', args=(speech.pk,), kwargs={}))
         
