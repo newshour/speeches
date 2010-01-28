@@ -1,5 +1,5 @@
 {% extends "speeches/base.html" %}
-
+{% load cache markup %}
 {% block css %}
 {{ block.super }}
 <link rel="stylesheet" href="{{ MEDIA_URL }}js/fancybox/fancybox.css" type="text/css" media="screen">
@@ -19,7 +19,8 @@ $(document).ready(function(){
 		var icons = {
 			video: '{{ MEDIA_URL }}css/footnotes/images/btn_video.gif',
 			comment: '{{ MEDIA_URL }}css/footnotes/images/btn_response.gif',
-			document: '{{ MEDIA_URL }}css/footnotes/images/btn_source.gif'
+			document: '{{ MEDIA_URL }}css/footnotes/images/btn_source.gif',
+			resource: '{{ MEDIA_URL }}css/footnotes/images/btn_resource.gif'
 		};
 		
 		if ($(notes[0]).is('.video')) {
@@ -28,6 +29,8 @@ $(document).ready(function(){
 			noteType = 'comment'
 		} else if ($(notes[0]).is('.document')) {
 			noteType = 'document'
+		} else if ($(notes[0]).is('.resource')) {
+			noteType = 'resource'
 		};
 		
 		var link_img = $('<img/>').attr('src', icons[noteType]);
@@ -69,6 +72,17 @@ $(document).ready(function(){
 		return false;
 	});
 	
+	$('a.author-link').click(function() {
+		$.fancybox.close();
+		return true
+	});
+	
+	{% comment %}
+	if (window.location.hash) {
+		$.fancybox.open(window.location.hash)
+	};
+	{% endcomment %}
+	
 })
 </script> 
  <style>
@@ -93,24 +107,31 @@ $(document).ready(function(){
 
 {% block title %}{{ speech.title }} | {{ block.super }}{% endblock %}
 
+{% block headline %}{{ speech.title }}{% endblock %}
+
 {% block description %}{{ speech.description }}{% endblock %}
 
-{% block bios %}
-    {% for guest in guest_list %}
-		<div id="{{ guest.username }}" class="notes">
-          <h4>{{ guest.get_full_name }}</h4>
-          <p>{% if guest.profile.image %}<img src="{{ guest.profile.image.thumbnail.url }}" height="50" width="50" />{% endif %}{{ guest.profile.bio }}</p>
-        </div>
-	{% endfor %}
-{%  endblock %}
-
 {% block  participants %}
-	{% for guest in guest_list %}
+	{% cache 600 guests %}
+	{% for guest in featured_guests %}
 		<div class="bio">{% if guest.profile.image %}<a href="#{{ guest.username }}"><img src="{{ guest.profile.image.thumbnail.url }}" height="50" width="50" /></a><br />{% endif %}
             <a href="#{{ guest.username }}">{{ guest.first_name }} <br />
           {{ guest.last_name }}</a></div>
 	{% endfor %}
+	{% endcache %}
 {% endblock %}
+
+{% block bios %}
+	{% cache 600 bios %}
+	<div id="more-bio" style="display: none;"></div>
+    {% for guest in guest_list %}
+		<div id="{{ guest.username }}" class="notes clearfix">
+          <h4>{{ guest.get_full_name }}</h4>
+          <p>{% if guest.profile.image %}<img src="{{ guest.profile.image.thumbnail.url }}" height="50" width="50" />{% endif %}{{ guest.profile.bio|markdown }}</p>
+        </div>
+	{% endfor %}
+	{% endcache %}
+{%  endblock %}
 
 {% block speech %}
 {{ speech.transcript_html|safe }}

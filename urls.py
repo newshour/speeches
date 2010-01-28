@@ -11,8 +11,7 @@ speech_archive_dict = {
 
 urlpatterns = patterns('',
     url(r'^$',
-        list_detail.object_list,
-        speech_archive_dict,
+        views.speech_index,
         name="speeches_archive_index"
         ),
         

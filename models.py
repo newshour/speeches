@@ -110,7 +110,7 @@ class Footnote(models.Model):
     
     class Meta:
         get_latest_by = "created"
-        ordering = ('index', 'created')
+        ordering = ('index', '-created')
     
     def __unicode__(self):
         return u"%s: %s..." % (self.author, self.text[:30])

@@ -6,20 +6,27 @@ from django.template import RequestContext
 from speeches.models import Speech, Footnote
 from speeches.forms import FootnoteForm
 
-from django.views.decorators.cache import never_cache
 
-@never_cache
+def speech_index(request):
+    try:
+        speech = Speech.objects.latest()
+        return HttpResponseRedirect(speech.get_absolute_url())
+    except:
+        return HttpResponseRedirect('/newshour/')
+
+
 def speech_detail(request, object_id, slug=None):
     speech = get_object_or_404(Speech, pk__exact=object_id)
-    # if not request.user.is_staff and (speech.status != Speech.LIVE_STATUS):
-    #    raise Http404
+    if not request.user.is_staff and (speech.status != Speech.LIVE_STATUS):
+        raise Http404
     if speech.slug != slug:
         return HttpResponseRedirect(speech.get_absolute_url())
         
     footnotes = speech.footnotes.live()
-    guest_list = speech.users().filter(profile__isnull=False)
+    guests = speech.users().filter(profile__isnull=False)
+    featured_guests = guests.order_by('?')[:6]
     return render_to_response(('speeches/speech%s.html' % speech.pk, 'speeches/speech_detail.html'),
-                              {'speech': speech, 'footnotes': footnotes, 'guest_list': guest_list},
+                              {'speech': speech, 'footnotes': footnotes, 'guest_list': guests, 'featured_guests': featured_guests},
                               context_instance=RequestContext(request))
 
 
@@ -28,8 +35,9 @@ def annotate_speech(request, object_id):
     speech = get_object_or_404(Speech, pk__exact=object_id)
     footnotes = speech.footnotes.all()
     guests = speech.users().filter(profile__isnull=False)
+    featured_guests = guests.order_by('?')[:6]
     return render_to_response(('speeches/speech%s.html' % speech.pk, 'speeches/annotate_speech.html'),
-                              {'speech': speech, 'footnotes': footnotes, 'guest_list': guests},
+                              {'speech': speech, 'footnotes': footnotes, 'guest_list': guests, 'featured_guests': featured_guests},
                               context_instance=RequestContext(request))
 
 

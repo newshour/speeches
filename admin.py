@@ -25,6 +25,12 @@ class GuestProfileAdmin(admin.ModelAdmin):
     inlines = [GuestProfileImageInline]
 
 
+class FootnoteAdmin(admin.ModelAdmin):
+    list_display = ('created', 'author', 'note_type', 'index', 'public')
+    list_filter = ('public', 'author', 'note_type', 'index')
+    ordering = ('-created',)
+
 admin.site.register(FootnoteType, FootnoteTypeAdmin)
 admin.site.register(Speech, SpeechAdmin)
 admin.site.register(GuestProfile, GuestProfileAdmin)
+admin.site.register(Footnote, FootnoteAdmin)
