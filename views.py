@@ -24,7 +24,7 @@ def speech_detail(request, object_id, slug=None):
         return HttpResponseRedirect(speech.get_absolute_url())
         
     footnotes = speech.footnotes.live()
-    guests = speech.users().filter(profile__isnull=False)
+    guests = speech.users().filter(profile__isnull=False).order_by('last_name', 'first_name')
     featured_guests = guests.order_by('?')[:6]
     return render_to_response(('speeches/speech%s.html' % speech.pk, 'speeches/speech_detail.html'),
                               {'speech': speech, 'footnotes': footnotes, 'guest_list': guests, 'featured_guests': featured_guests},
