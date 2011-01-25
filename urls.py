@@ -10,6 +10,8 @@ speech_archive_dict = {
 }
 
 urlpatterns = patterns('',
+    url(r'^api/', include('speeches.api.urls')),
+    
     url(r'^$',
         views.speech_index,
         name="speeches_archive_index"

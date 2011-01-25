@@ -4,10 +4,14 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 
-from backends.s3 import S3Storage
 from imagekit.models import ImageModel, CROP_HORZ_CHOICES, CROP_VERT_CHOICES
 from markdown import markdown
 from speeches import utils
+
+try:
+    from backends.s3 import S3Storage
+except ImportError:
+    from storages.backends.s3 import S3Storage
 
 # managers
 

@@ -10,7 +10,7 @@ from django.views.decorators.cache import never_cache
 
 def speech_index(request):
     try:
-        speech = Speech.objects.latest()
+        speech = Speech.objects.live().latest()
         return HttpResponseRedirect(speech.get_absolute_url())
     except:
         return HttpResponseRedirect('/newshour/')
