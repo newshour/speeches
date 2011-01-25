@@ -30,12 +30,19 @@ class FootnoteHandler(BaseHandler):
     fields = (
         'index',
         'text',
+        'author_info',
         ('note_type', 
             ('name', 'slug'),
         ),
-        ('author', 
-            ('first_name', 'last_name'),
-        ),
+        # ('author', 
+            #(
+            #    'profile', (
+            #        'first_name',
+            #        'last_name',
+            #        'bio',
+            #    ),
+        #    ),
+        # ),
     )
     
     def read(self, request, speech_id):
@@ -45,4 +52,24 @@ class FootnoteHandler(BaseHandler):
             return rc.DOES_NOT_EXIST
         
         return speech.footnotes.live().select_related()
-        
+    
+    @staticmethod
+    def author_info(footnote):
+        try:
+            a = footnote.author.profile
+            return {
+                'first_name': a.first_name,
+                'last_name' : a.last_name,
+                'full_name' : a.user.get_full_name(),
+                'id'        : a.id,
+                'title'     : a.title,
+                'bio'       : a.bio,
+                'thumbnail' : a.image.thumbnail.url
+            }
+        except:
+            a = footnote.author
+            return {
+                'first_name': a.first_name,
+                'last_name' : a.last_name,
+                'full_name' : a.get_full_name()
+            }
