@@ -42,7 +42,7 @@ def annotate_speech(request, object_id):
                               {'speech': speech, 'footnotes': footnotes, 'guest_list': guests, 'featured_guests': featured_guests},
                               context_instance=RequestContext(request))
 
-
+@never_cache
 @login_required
 def add_footnote(request, object_id):
     if request.GET.has_key('popup'):

@@ -155,7 +155,7 @@ class GuestProfile(models.Model):
     admin_thumbnail_view.allow_tags = True
 
     def get_full_name(self):
-        return self.user.get_full_name()
+        return u"%s %s" % (self.first_name, self.last_name)
 
 
 class GuestProfileImage(ImageModel):

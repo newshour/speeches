@@ -109,13 +109,13 @@ $(document).ready(function(){
 
 {% block headline %}{{ speech.title }}{% endblock %}
 
-{% block description %}{{ speech.description }}{% endblock %}
+{% block description %}{{ speech.description|safe }}{% endblock %}
 
 {% block  participants %}
-	{% cache 3600 guests %}
+	{% cache 360 guests speech.id speech.date %}
 	{% for guest in featured_guests %}
 		<div class="bio">{% if guest.profile.image %}<a href="#{{ guest.username }}">
-		{% cache 7200 profile_image guest %}<img src="{{ guest.profile.image.thumbnail.url }}" height="50" width="50" />{% endcache %}
+		{% cache 7200 profile_image guest speech.id speech.date %}<img src="{{ guest.profile.image.thumbnail.url }}" height="50" width="50" />{% endcache %}
 		</a><br />{% endif %}
             <a href="#{{ guest.username }}">{{ guest.first_name }} <br />
           {{ guest.last_name }}</a></div>
@@ -124,13 +124,13 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block bios %}
-	{% cache 3600 bios %}
+	{% cache 360 bios speech.id speech.date %}
 	<div id="more-bio" style="display: none;"></div>
     {% for guest in guest_list %}
 		<div id="{{ guest.username }}" class="notes clearfix">
           <h4>{{ guest.get_full_name }}</h4>
           <p>{% if guest.profile.image %}
-          {% cache 7200 profile_image guest %}<img src="{{ guest.profile.image.thumbnail.url }}" height="50" width="50" />{% endcache %}{% endif %}
+          {% cache 7200 profile_image guest speech speech.date %}<img src="{{ guest.profile.image.thumbnail.url }}" height="50" width="50" />{% endcache %}{% endif %}
           {{ guest.profile.bio|markdown }}</p>
         </div>
 	{% endfor %}

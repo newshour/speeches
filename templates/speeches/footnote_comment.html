@@ -1,17 +1,21 @@
 {% load markup %}
+{% with footnote.author.profile as author %}
 <div id="f{{ footnote.id }}" class="footnote {{ footnote.note_type.slug }}">
 	<p class="author clearfix">
-	{% if footnote.author.profile.image %}
-	<img src="{{ footnote.author.profile.image.thumbnail.url }}" class="profile-image" width="50" height="50" />
-	{% endif %}
-	{% if footnote.author.profile %}
-	<span><strong><a href="#{{ footnote.author.username }}" class="author-link">{{ footnote.author.get_full_name }}</a></strong> 
-	{% else %}
-	<span><strong>{{ footnote.author.get_full_name }}</strong> 
-	{% endif %}
-	{% block verb %}said{% endblock %}:</span>
+		{% if author.image %}
+		<img src="{{ author.image.thumbnail.url }}" class="profile-image" width="50" height="50" />
+		{% endif %}
+		{% if author %}
+		<span><strong><a href="#{{ footnote.author.username }}" class="author-link">{{ author.get_full_name }}</a>
+		</strong> 
+		{% else %}
+		<span><strong>{{ footnote.author.get_full_name }}</strong> 
+		{% endif %}
+		{% block verb %}said{% endblock %}:</span>
 	</p>
 	<div>
 	{{ footnote.text|markdown }}
 	</div>
 </div>
+{# 	{% if author.title %}<div class="author-title">{{ author.title }}</div>{% endif %} #}
+{% endwith %}
