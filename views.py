@@ -6,7 +6,7 @@ from django.template import RequestContext
 from speeches.models import Speech, Footnote
 from speeches.forms import FootnoteForm
 
-from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import cache_page, never_cache
 
 def speech_index(request):
     try:
@@ -15,7 +15,7 @@ def speech_index(request):
     except:
         return HttpResponseRedirect('/newshour/')
 
-
+@cache_page(60 * 5)
 def speech_detail(request, object_id, slug=None):
     speech = get_object_or_404(Speech, pk__exact=object_id)
     if not request.user.is_staff and (speech.status != Speech.LIVE_STATUS):
