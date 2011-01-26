@@ -26,7 +26,7 @@ class GuestProfileAdmin(admin.ModelAdmin):
 
 
 class FootnoteAdmin(admin.ModelAdmin):
-    list_display = ('created', 'speech', 'author', 'note_type', 'index', 'public')
+    list_display = ('created', 'speech', 'author', 'note_type', 'index', 'public', 'text')
     list_filter = ('public', 'speech', 'author', 'note_type', 'index')
     ordering = ('-created',)
 
